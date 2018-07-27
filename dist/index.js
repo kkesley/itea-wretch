@@ -6,7 +6,7 @@ import { put } from 'redux-saga/effects';
 export const SERVICES = {
     PLATFORM: "PLATFORM"
 };
-export const BASE_URL = node.ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com";
+export const BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com";
 export const API = ({ auth } = { auth: null }) => {
 
     const apiHandler = wretch()
