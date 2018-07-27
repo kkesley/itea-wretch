@@ -1,0 +1,11 @@
+{
+  "name": "itea-wretch",
+  "version": "1.0.0",
+  "description": "Wretch wrapper for iteacloud application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kendrick Kesley",
+  "license": "MIT"
+}
