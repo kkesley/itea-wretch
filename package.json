@@ -1,6 +1,6 @@
 {
   "name": "itea-wretch",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Wretch wrapper for iteacloud application",
   "main": "dist/index.js",
   "scripts": {
