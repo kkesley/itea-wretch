@@ -1,7 +1,0 @@
-{
-    "name": "itea-wretch/platform",
-    "private": true,
-    "main": "./index.js",
-    "module": "./index.js"
-  }
-  

@@ -1,4 +1,4 @@
-import {SERVICES, callAPI} from '../util/api'
+import {SERVICES, callAPI} from '../index'
 export default function* login({alias, username, password} = {}){
     var res = yield callAPI({
         service: SERVICES.PLATFORM,

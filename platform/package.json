@@ -1,0 +1,7 @@
+{
+    "name": "itea-wretch/platform",
+    "private": true,
+    "main": "../dist/platform/index.js",
+    "module": ".../dist/platform/index.js"
+  }
+  

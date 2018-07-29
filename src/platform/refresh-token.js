@@ -1,4 +1,4 @@
-import {SERVICES, callAPI} from '../util/api'
+import {SERVICES, callAPI} from '../index'
 export default function* refreshToken({refreshToken, refreshTokenSecret, accesstoken} = {}){
     var res = yield call(() => callAPI({
         service: SERVICES.PLATFORM, 

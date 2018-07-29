@@ -1,6 +1,5 @@
 import login from './login'
 import refreshToken from './refresh-token'
-export default {
-    loginAPI: login,
-    refreshTokenAPI: refreshToken
-}
+
+export const loginAPI = login
+export const refreshTokenAPI = refreshToken
