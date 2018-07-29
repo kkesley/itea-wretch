@@ -1,6 +1,6 @@
 import login from './login';
 import refreshToken from './refresh-token';
-export const API = {
+export default {
     loginAPI: login,
     refreshTokenAPI: refreshToken
 };
