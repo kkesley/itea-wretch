@@ -5,11 +5,11 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx babel src --out-dir dist"
+    "build": "npx babel src/index.js --out-dir dist && npx babel src/platform --out-dir platform"
   },
   "files": [
-    "dist/index.js",
-    "dist/platform"
+    "dist",
+    "platform"
   ],
   "repository": {
     "type": "git",
