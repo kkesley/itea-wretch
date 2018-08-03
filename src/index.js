@@ -14,8 +14,8 @@ export const API = ({auth} = {auth: null}) => {
     .url(BASE_URL)
     // Set headers
     .headers({ 
-        "TZ": moment.tz.guess(), 
-        "Lang": storage.get("lang") || "id" 
+        "tz": moment.tz.guess(), 
+        "lang": storage.get("lang") || "id" 
     })
     // Handle 500 errors
     .resolve(_=>_.internalError(err => ({status: 500, body: err.message})))
