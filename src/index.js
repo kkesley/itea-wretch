@@ -2,6 +2,7 @@
 import wretch from 'wretch'
 import moment from 'moment-timezone'
 import {put} from 'redux-saga/effects'
+import storage from 'store'
 export const SERVICES = {
     PLATFORM: "PLATFORM"
 }
@@ -13,6 +14,7 @@ export const API = ({auth} = {auth: null}) => {
     .url(BASE_URL)
     // Set headers
     .headers({ "TZ": moment.tz.guess() })
+    .headers({"Lang": storage.get("lang") || "id" })
     // Handle 500 errors
     .resolve(_=>_.internalError(err => ({status: 500, body: err.message})))
     // Handle 502 errors
