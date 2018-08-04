@@ -1,34 +1,38 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.API = exports.BASE_URL = exports.SERVICES = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
 
 exports.callAPI = callAPI;
 
-var _wretch = require("wretch");
+var _wretch = require('wretch');
 
 var _wretch2 = _interopRequireDefault(_wretch);
 
-var _momentTimezone = require("moment-timezone");
+var _momentTimezone = require('moment-timezone');
 
 var _momentTimezone2 = _interopRequireDefault(_momentTimezone);
 
-var _effects = require("redux-saga/effects");
+var _effects = require('redux-saga/effects');
 
-var _store = require("store");
+var _store = require('store');
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _marked = /*#__PURE__*/regeneratorRuntime.mark(callAPI);
+var _marked = /*#__PURE__*/_regenerator2.default.mark(callAPI);
 
-require("babel-core/register");
-require("babel-polyfill");
 var SERVICES = exports.SERVICES = {
     PLATFORM: "PLATFORM"
 };
@@ -89,7 +93,7 @@ function callAPI() {
         auth = _ref2.auth;
 
     var mainHandler, serviceAPI, req, res;
-    return regeneratorRuntime.wrap(function callAPI$(_context) {
+    return _regenerator2.default.wrap(function callAPI$(_context) {
         while (1) {
             switch (_context.prev = _context.next) {
                 case 0:
@@ -112,14 +116,14 @@ function callAPI() {
                         break;
                     }
 
-                    return _context.abrupt("return", { status: 400, body: "no service or url provided" });
+                    return _context.abrupt('return', { status: 400, body: "no service or url provided" });
 
                 case 8:
                     _context.next = 10;
                     return (0, _effects.put)({ type: listenCode.indexOf(400) >= 0 ? listener : mainHandler, status: 400, body: "no service or url provided" });
 
                 case 10:
-                    return _context.abrupt("return");
+                    return _context.abrupt('return');
 
                 case 11:
 
@@ -144,14 +148,14 @@ function callAPI() {
                         break;
                     }
 
-                    return _context.abrupt("return", { status: 501, body: 'Service not available' });
+                    return _context.abrupt('return', { status: 501, body: 'Service not available' });
 
                 case 19:
                     _context.next = 21;
                     return (0, _effects.put)({ type: listenCode.indexOf(501) >= 0 ? listener : mainHandler, status: 501, body: 'Service not available' });
 
                 case 21:
-                    return _context.abrupt("return");
+                    return _context.abrupt('return');
 
                 case 22:
                     req = serviceAPI.url(url);
@@ -177,14 +181,14 @@ function callAPI() {
                         break;
                     }
 
-                    return _context.abrupt("return", res);
+                    return _context.abrupt('return', res);
 
                 case 32:
                     _context.next = 34;
-                    return (0, _effects.put)(_extends({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
+                    return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
                 case 34:
-                case "end":
+                case 'end':
                     return _context.stop();
             }
         }

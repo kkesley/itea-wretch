@@ -1,6 +1,4 @@
 
-require("babel-core/register");
-require("babel-polyfill");
 import wretch from 'wretch'
 import moment from 'moment-timezone'
 import {put} from 'redux-saga/effects'
