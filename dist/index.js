@@ -1,84 +1,190 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.API = exports.BASE_URL = exports.SERVICES = undefined;
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-import wretch from 'wretch';
-import moment from 'moment-timezone';
-import { put } from 'redux-saga/effects';
-import storage from 'store';
-export const SERVICES = {
+exports.callAPI = callAPI;
+
+var _wretch = require('wretch');
+
+var _wretch2 = _interopRequireDefault(_wretch);
+
+var _momentTimezone = require('moment-timezone');
+
+var _momentTimezone2 = _interopRequireDefault(_momentTimezone);
+
+var _effects = require('redux-saga/effects');
+
+var _store = require('store');
+
+var _store2 = _interopRequireDefault(_store);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _marked = /*#__PURE__*/regeneratorRuntime.mark(callAPI);
+
+var SERVICES = exports.SERVICES = {
     PLATFORM: "PLATFORM"
 };
-export const BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com";
-export const API = ({ auth } = { auth: null }) => {
+var BASE_URL = exports.BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com";
+var API = exports.API = function API() {
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { auth: null },
+        auth = _ref.auth;
 
-    const apiHandler = wretch()
+    var apiHandler = (0, _wretch2.default)()
     // Set the base url
     .url(BASE_URL)
     // Set headers
     .headers({
-        "tz": moment.tz.guess(),
-        "lang": storage.get("lang") || "id"
+        "tz": _momentTimezone2.default.tz.guess(),
+        "lang": _store2.default.get("lang") || "id"
     })
     // Handle 500 errors
-    .resolve(_ => _.internalError(err => ({ status: 500, body: err.message })))
+    .resolve(function (_) {
+        return _.internalError(function (err) {
+            return { status: 500, body: err.message };
+        });
+    })
     // Handle 502 errors
-    .resolve(_ => _.error(502, err => ({ status: 512, body: err.message })))
+    .resolve(function (_) {
+        return _.error(502, function (err) {
+            return { status: 512, body: err.message };
+        });
+    })
     // Handle 403 errors
-    .resolve(_ => _.forbidden(err => ({ status: 403, body: err.message })));
+    .resolve(function (_) {
+        return _.forbidden(function (err) {
+            return { status: 403, body: err.message };
+        });
+    });
     if (auth !== null && typeof auth === "string" && auth.length > 0) {
         return apiHandler
         // Authorization header
         .auth(auth)
         // Handle 401 errors
-        .resolve(_ => _.unauthorized(err => ({ status: 401, body: err })));
+        .resolve(function (_) {
+            return _.unauthorized(function (err) {
+                return { status: 401, body: err };
+            });
+        });
     }
     return apiHandler;
 };
 
-export function* callAPI({ service, url, method, body, query, listener, listenCode, auth } = { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null }) {
-    const mainHandler = "@@ITEACLOUD/REQ.MAIN";
-    if (!Array.isArray(listenCode)) {
-        listenCode = [];
-    }
-    if (typeof listener !== "string") {
-        listener = null;
-    }
-    if (typeof service !== "string" || typeof method !== "string") {
-        if (!listener && listenCode.indexOf(400) >= 0) {
-            return { status: 400, body: "no service or url provided" };
-        } else {
-            yield put({ type: listenCode.indexOf(400) >= 0 ? listener : mainHandler, status: 400, body: "no service or url provided" });
-            return;
-        }
-    }
+function callAPI() {
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null },
+        service = _ref2.service,
+        url = _ref2.url,
+        method = _ref2.method,
+        body = _ref2.body,
+        query = _ref2.query,
+        listener = _ref2.listener,
+        listenCode = _ref2.listenCode,
+        auth = _ref2.auth;
 
-    if (typeof auth !== "string") {
-        auth = null;
-    } else if (auth.length <= 0) {
-        auth = null;
-    }
-    var serviceAPI = API({ auth });
-    if (service === "PLATFORM") {
-        serviceAPI = serviceAPI.url('/platform');
-    }
-    if (serviceAPI === null) {
-        if (!listener && listenCode.indexOf(501) >= 0) {
-            return { status: 501, body: 'Service not available' };
-        } else {
-            yield put({ type: listenCode.indexOf(501) >= 0 ? listener : mainHandler, status: 501, body: 'Service not available' });
-            return;
+    var mainHandler, serviceAPI, req, res;
+    return regeneratorRuntime.wrap(function callAPI$(_context) {
+        while (1) {
+            switch (_context.prev = _context.next) {
+                case 0:
+                    mainHandler = "@@ITEACLOUD/REQ.MAIN";
+
+                    if (!Array.isArray(listenCode)) {
+                        listenCode = [];
+                    }
+                    if (typeof listener !== "string") {
+                        listener = null;
+                    }
+
+                    if (!(typeof service !== "string" || typeof method !== "string")) {
+                        _context.next = 11;
+                        break;
+                    }
+
+                    if (!(!listener && listenCode.indexOf(400) >= 0)) {
+                        _context.next = 8;
+                        break;
+                    }
+
+                    return _context.abrupt('return', { status: 400, body: "no service or url provided" });
+
+                case 8:
+                    _context.next = 10;
+                    return (0, _effects.put)({ type: listenCode.indexOf(400) >= 0 ? listener : mainHandler, status: 400, body: "no service or url provided" });
+
+                case 10:
+                    return _context.abrupt('return');
+
+                case 11:
+
+                    if (typeof auth !== "string") {
+                        auth = null;
+                    } else if (auth.length <= 0) {
+                        auth = null;
+                    }
+                    serviceAPI = API({ auth: auth });
+
+                    if (service === "PLATFORM") {
+                        serviceAPI = serviceAPI.url('/platform');
+                    }
+
+                    if (!(serviceAPI === null)) {
+                        _context.next = 22;
+                        break;
+                    }
+
+                    if (!(!listener && listenCode.indexOf(501) >= 0)) {
+                        _context.next = 19;
+                        break;
+                    }
+
+                    return _context.abrupt('return', { status: 501, body: 'Service not available' });
+
+                case 19:
+                    _context.next = 21;
+                    return (0, _effects.put)({ type: listenCode.indexOf(501) >= 0 ? listener : mainHandler, status: 501, body: 'Service not available' });
+
+                case 21:
+                    return _context.abrupt('return');
+
+                case 22:
+                    req = serviceAPI.url(url);
+                    res = null;
+
+                    if (method === "GET") {
+                        res = req.get().query(query);
+                    } else if (method === "POST") {
+                        req = req.post(body);
+                    }
+                    _context.next = 27;
+                    return req.json(function (res) {
+                        return { status: 200, body: res };
+                    }).catch(function (err) {
+                        return { status: err.status, body: err.message };
+                    });
+
+                case 27:
+                    res = _context.sent;
+
+                    if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
+                        _context.next = 32;
+                        break;
+                    }
+
+                    return _context.abrupt('return', res);
+
+                case 32:
+                    _context.next = 34;
+                    return (0, _effects.put)(_extends({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
+
+                case 34:
+                case 'end':
+                    return _context.stop();
+            }
         }
-    }
-    var req = serviceAPI.url(url);
-    var res = null;
-    if (method === "GET") {
-        res = req.get().query(query);
-    } else if (method === "POST") {
-        req = req.post(body);
-    }
-    res = yield req.json(res => ({ status: 200, body: res })).catch(err => ({ status: err.status, body: err.message }));
-    if (!listener && listenCode.indexOf(res.status) >= 0) {
-        return res;
-    } else {
-        yield put(_extends({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
-    }
+    }, _marked, this);
 }
