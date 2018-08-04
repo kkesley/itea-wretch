@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -9,17 +9,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.callAPI = callAPI;
 
-var _wretch = require('wretch');
+var _wretch = require("wretch");
 
 var _wretch2 = _interopRequireDefault(_wretch);
 
-var _momentTimezone = require('moment-timezone');
+var _momentTimezone = require("moment-timezone");
 
 var _momentTimezone2 = _interopRequireDefault(_momentTimezone);
 
-var _effects = require('redux-saga/effects');
+var _effects = require("redux-saga/effects");
 
-var _store = require('store');
+var _store = require("store");
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -27,6 +27,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var _marked = /*#__PURE__*/regeneratorRuntime.mark(callAPI);
 
+require("babel-core/register");
+require("babel-polyfill");
 var SERVICES = exports.SERVICES = {
     PLATFORM: "PLATFORM"
 };
@@ -110,14 +112,14 @@ function callAPI() {
                         break;
                     }
 
-                    return _context.abrupt('return', { status: 400, body: "no service or url provided" });
+                    return _context.abrupt("return", { status: 400, body: "no service or url provided" });
 
                 case 8:
                     _context.next = 10;
                     return (0, _effects.put)({ type: listenCode.indexOf(400) >= 0 ? listener : mainHandler, status: 400, body: "no service or url provided" });
 
                 case 10:
-                    return _context.abrupt('return');
+                    return _context.abrupt("return");
 
                 case 11:
 
@@ -142,14 +144,14 @@ function callAPI() {
                         break;
                     }
 
-                    return _context.abrupt('return', { status: 501, body: 'Service not available' });
+                    return _context.abrupt("return", { status: 501, body: 'Service not available' });
 
                 case 19:
                     _context.next = 21;
                     return (0, _effects.put)({ type: listenCode.indexOf(501) >= 0 ? listener : mainHandler, status: 501, body: 'Service not available' });
 
                 case 21:
-                    return _context.abrupt('return');
+                    return _context.abrupt("return");
 
                 case 22:
                     req = serviceAPI.url(url);
@@ -175,14 +177,14 @@ function callAPI() {
                         break;
                     }
 
-                    return _context.abrupt('return', res);
+                    return _context.abrupt("return", res);
 
                 case 32:
                     _context.next = 34;
                     return (0, _effects.put)(_extends({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
                 case 34:
-                case 'end':
+                case "end":
                     return _context.stop();
             }
         }

@@ -4,6 +4,7 @@
     "node_modules/*"
   ],
   "presets": [
-    "es2015"
+    "es2015",
+    "stage-0"
   ]
 }
