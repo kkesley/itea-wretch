@@ -170,7 +170,7 @@ function callAPI() {
                     return req.json(function (res) {
                         return { status: 200, body: res };
                     }).catch(function (err) {
-                        return { status: err.status, body: err.message };
+                        return { status: err, body: err.message };
                     });
 
                 case 27:
