@@ -169,8 +169,6 @@ function callAPI() {
                     _context.next = 27;
                     return req.json(function (res) {
                         return { status: 200, body: res };
-                    }).catch(function (err) {
-                        return { status: err.status, body: err.message };
                     });
 
                 case 27:
