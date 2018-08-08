@@ -23,13 +23,12 @@ export const API = ({auth} = {auth: null}) => {
     .resolve(_=>_.error(502, err => ({status: 512, body: err.message})))
     // Handle 403 errors
     .resolve(_=>_.forbidden(err => ({status: 403, body: err.message})))  
+    // Handle 401 errors
+    .resolve(_=>_.unauthorized(err => ({status: 401, body: err.message})))
     if (auth !== null && typeof auth === "string" && auth.length > 0) {
         return apiHandler
         // Authorization header
         .auth(auth)
-        // Handle 401 errors
-        .resolve(_=>_.unauthorized(err => ({status: 401, body: err})))
-         
     }
     return apiHandler
 }
@@ -76,7 +75,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     }else if(method === "POST"){
         req = req.post(body)
     }
-    res = yield req.json(res => ({status: 200, body: res})).catch(err => ({status: err, body: err.message}))
+    res = yield req.json(res => ({status: 200, body: res})).catch(err => ({status: err.status, body: err.message}))
     if(!listener && listenCode.indexOf(res.status) >= 0){
         return res
     }else{
