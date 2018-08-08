@@ -66,17 +66,17 @@ var API = exports.API = function API() {
         return _.forbidden(function (err) {
             return { status: 403, body: err.message };
         });
+    })
+    // Handle 401 errors
+    .resolve(function (_) {
+        return _.unauthorized(function (err) {
+            return { status: 401, body: err.message };
+        });
     });
     if (auth !== null && typeof auth === "string" && auth.length > 0) {
         return apiHandler
         // Authorization header
-        .auth(auth)
-        // Handle 401 errors
-        .resolve(function (_) {
-            return _.unauthorized(function (err) {
-                return { status: 401, body: err };
-            });
-        });
+        .auth(auth);
     }
     return apiHandler;
 };
@@ -170,7 +170,7 @@ function callAPI() {
                     return req.json(function (res) {
                         return { status: 200, body: res };
                     }).catch(function (err) {
-                        return { status: err, body: err.message };
+                        return { status: err.status, body: err.message };
                     });
 
                 case 27:
