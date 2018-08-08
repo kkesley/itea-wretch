@@ -162,13 +162,15 @@ function callAPI() {
                     res = null;
 
                     if (method === "GET") {
-                        res = req.query(query).get();
+                        req = req.query(query).get();
                     } else if (method === "POST") {
                         req = req.post(body);
                     }
                     _context.next = 27;
                     return req.json(function (res) {
                         return { status: 200, body: res };
+                    }).catch(function (err) {
+                        return { status: err.status, body: err.message };
                     });
 
                 case 27:
