@@ -72,7 +72,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     var req = serviceAPI.url(url)
     var res = null
     if(method === "GET"){
-        res = req.get().query(query)
+        res = req.query(query).get()
     }else if(method === "POST"){
         req = req.post(body)
     }

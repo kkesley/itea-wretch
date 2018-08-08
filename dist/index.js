@@ -162,7 +162,7 @@ function callAPI() {
                     res = null;
 
                     if (method === "GET") {
-                        res = req.get().query(query);
+                        res = req.query(query).get();
                     } else if (method === "POST") {
                         req = req.post(body);
                     }
