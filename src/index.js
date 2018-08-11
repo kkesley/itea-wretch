@@ -60,11 +60,11 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     }
     if(beacon === true && 'sendBeacon' in navigator){
         var header = {type: "application/x-www-form-urlencoded"}
-        var form_data = new FormData();
+        var formBody = [];
         for ( var key in body ) {
-            form_data.append(key, body[key]);
+            formBody.push(key + "=" + body[key]);
         }
-        var blob = new Blob(form_data, header);
+        var blob = new Blob(formBody.join("&"), header);
         return navigator.sendBeacon(BASE_URL + serviceURL + url, blob);
     }
     var serviceAPI = API({auth})
