@@ -93,7 +93,7 @@ function callAPI() {
         auth = _ref2.auth,
         beacon = _ref2.beacon;
 
-    var mainHandler, serviceURL, header, blob, serviceAPI, req, res;
+    var mainHandler, serviceURL, header, form_data, key, blob, serviceAPI, req, res;
     return _regenerator2.default.wrap(function callAPI$(_context) {
         while (1) {
             switch (_context.prev = _context.next) {
@@ -139,43 +139,44 @@ function callAPI() {
                     }
 
                     if (!(beacon === true && 'sendBeacon' in navigator)) {
-                        _context.next = 19;
+                        _context.next = 20;
                         break;
                     }
 
-                    header = { type: "text/plain" };
+                    header = { type: "application/x-www-form-urlencoded" };
+                    form_data = new FormData();
 
-                    if (auth !== null) {
-                        header.Authorization = auth;
+                    for (key in body) {
+                        form_data.append(key, body[key]);
                     }
-                    blob = new Blob([], header);
+                    blob = new Blob(form_data, header);
                     return _context.abrupt('return', navigator.sendBeacon(BASE_URL + serviceURL + url, blob));
 
-                case 19:
+                case 20:
                     serviceAPI = API({ auth: auth });
 
                     serviceAPI = serviceAPI.url(serviceURL);
 
                     if (!(serviceAPI === null)) {
-                        _context.next = 29;
+                        _context.next = 30;
                         break;
                     }
 
                     if (!(!listener && listenCode.indexOf(501) >= 0)) {
-                        _context.next = 26;
+                        _context.next = 27;
                         break;
                     }
 
                     return _context.abrupt('return', { status: 501, body: 'Service not available' });
 
-                case 26:
-                    _context.next = 28;
+                case 27:
+                    _context.next = 29;
                     return (0, _effects.put)({ type: listenCode.indexOf(501) >= 0 ? listener : mainHandler, status: 501, body: 'Service not available' });
 
-                case 28:
+                case 29:
                     return _context.abrupt('return');
 
-                case 29:
+                case 30:
                     req = serviceAPI.url(url);
                     res = null;
 
@@ -184,28 +185,28 @@ function callAPI() {
                     } else if (method === "POST") {
                         req = req.post(body);
                     }
-                    _context.next = 34;
+                    _context.next = 35;
                     return req.json(function (res) {
                         return { status: 200, body: res };
                     }).catch(function (err) {
                         return { status: err.status, body: err.message };
                     });
 
-                case 34:
+                case 35:
                     res = _context.sent;
 
                     if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
-                        _context.next = 39;
+                        _context.next = 40;
                         break;
                     }
 
                     return _context.abrupt('return', res);
 
-                case 39:
-                    _context.next = 41;
+                case 40:
+                    _context.next = 42;
                     return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
-                case 41:
+                case 42:
                 case 'end':
                     return _context.stop();
             }
