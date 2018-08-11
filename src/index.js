@@ -61,7 +61,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     if(beacon === true && 'sendBeacon' in navigator){
         var header = {type: "text/plain"}
         if(auth !== null){
-            header.Authorization = accesstoken
+            header.Authorization = auth
         }
         var blob = new Blob([], header);
         return navigator.sendBeacon(BASE_URL + serviceURL + url, blob);
