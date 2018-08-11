@@ -82,7 +82,7 @@ var API = exports.API = function API() {
 };
 
 function callAPI() {
-    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null },
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false },
         service = _ref2.service,
         url = _ref2.url,
         method = _ref2.method,
@@ -90,9 +90,10 @@ function callAPI() {
         query = _ref2.query,
         listener = _ref2.listener,
         listenCode = _ref2.listenCode,
-        auth = _ref2.auth;
+        auth = _ref2.auth,
+        beacon = _ref2.beacon;
 
-    var mainHandler, serviceAPI, req, res;
+    var mainHandler, serviceURL, header, blob, serviceAPI, req, res;
     return _regenerator2.default.wrap(function callAPI$(_context) {
         while (1) {
             switch (_context.prev = _context.next) {
@@ -126,38 +127,55 @@ function callAPI() {
                     return _context.abrupt('return');
 
                 case 11:
-
                     if (typeof auth !== "string") {
                         auth = null;
                     } else if (auth.length <= 0) {
                         auth = null;
                     }
-                    serviceAPI = API({ auth: auth });
+                    serviceURL = "";
 
                     if (service === "PLATFORM") {
-                        serviceAPI = serviceAPI.url('/platform');
+                        serviceURL = "/platform";
                     }
 
+                    if (!(beacon === true && 'sendBeacon' in navigator)) {
+                        _context.next = 19;
+                        break;
+                    }
+
+                    header = { type: "text/plain" };
+
+                    if (auth !== null) {
+                        header.Authorization = accesstoken;
+                    }
+                    blob = new Blob([], header);
+                    return _context.abrupt('return', navigator.sendBeacon(BASE_URL + serviceURL + url, blob));
+
+                case 19:
+                    serviceAPI = API({ auth: auth });
+
+                    serviceAPI = serviceAPI.url(serviceURL);
+
                     if (!(serviceAPI === null)) {
-                        _context.next = 22;
+                        _context.next = 29;
                         break;
                     }
 
                     if (!(!listener && listenCode.indexOf(501) >= 0)) {
-                        _context.next = 19;
+                        _context.next = 26;
                         break;
                     }
 
                     return _context.abrupt('return', { status: 501, body: 'Service not available' });
 
-                case 19:
-                    _context.next = 21;
+                case 26:
+                    _context.next = 28;
                     return (0, _effects.put)({ type: listenCode.indexOf(501) >= 0 ? listener : mainHandler, status: 501, body: 'Service not available' });
 
-                case 21:
+                case 28:
                     return _context.abrupt('return');
 
-                case 22:
+                case 29:
                     req = serviceAPI.url(url);
                     res = null;
 
@@ -166,28 +184,28 @@ function callAPI() {
                     } else if (method === "POST") {
                         req = req.post(body);
                     }
-                    _context.next = 27;
+                    _context.next = 34;
                     return req.json(function (res) {
                         return { status: 200, body: res };
                     }).catch(function (err) {
                         return { status: err.status, body: err.message };
                     });
 
-                case 27:
+                case 34:
                     res = _context.sent;
 
                     if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
-                        _context.next = 32;
+                        _context.next = 39;
                         break;
                     }
 
                     return _context.abrupt('return', res);
 
-                case 32:
-                    _context.next = 34;
+                case 39:
+                    _context.next = 41;
                     return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
-                case 34:
+                case 41:
                 case 'end':
                     return _context.stop();
             }

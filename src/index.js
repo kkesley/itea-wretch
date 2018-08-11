@@ -33,7 +33,7 @@ export const API = ({auth} = {auth: null}) => {
     return apiHandler
 }
 
-export function* callAPI({service, url, method, body, query, listener, listenCode, auth} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null}){
+export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false}){
     const mainHandler = "@@ITEACLOUD/REQ.MAIN"
     if(!Array.isArray(listenCode)){
         listenCode = []
@@ -48,18 +48,26 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
             yield put({type: listenCode.indexOf(400) >= 0 ? listener : mainHandler, status: 400, body: "no service or url provided"})
             return
         }
-        
     }
-    
     if(typeof auth !== "string"){
         auth = null
     }else if(auth.length <= 0){
         auth = null
     }
-    var serviceAPI = API({auth})
+    var serviceURL = ""
     if(service === "PLATFORM"){
-        serviceAPI = serviceAPI.url('/platform')
+        serviceURL = "/platform"
     }
+    if(beacon === true && 'sendBeacon' in navigator){
+        var header = {type: "text/plain"}
+        if(auth !== null){
+            header.Authorization = accesstoken
+        }
+        var blob = new Blob([], header);
+        return navigator.sendBeacon(BASE_URL + serviceURL + url, blob);
+    }
+    var serviceAPI = API({auth})
+    serviceAPI = serviceAPI.url(serviceURL)
     if(serviceAPI === null){
         if(!listener && listenCode.indexOf(501) >= 0){
             return {status: 501, body: 'Service not available'}
