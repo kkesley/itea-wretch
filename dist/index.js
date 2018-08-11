@@ -146,7 +146,7 @@ function callAPI() {
                     header = { type: "text/plain" };
 
                     if (auth !== null) {
-                        header.Authorization = accesstoken;
+                        header.Authorization = auth;
                     }
                     blob = new Blob([], header);
                     return _context.abrupt('return', navigator.sendBeacon(BASE_URL + serviceURL + url, blob));
