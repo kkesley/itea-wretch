@@ -93,7 +93,7 @@ function callAPI() {
         auth = _ref2.auth,
         beacon = _ref2.beacon;
 
-    var mainHandler, serviceURL, header, form_data, key, blob, serviceAPI, req, res;
+    var mainHandler, serviceURL, header, formBody, key, blob, serviceAPI, req, res;
     return _regenerator2.default.wrap(function callAPI$(_context) {
         while (1) {
             switch (_context.prev = _context.next) {
@@ -144,12 +144,12 @@ function callAPI() {
                     }
 
                     header = { type: "application/x-www-form-urlencoded" };
-                    form_data = new FormData();
+                    formBody = [];
 
                     for (key in body) {
-                        form_data.append(key, body[key]);
+                        formBody.push(key + "=" + body[key]);
                     }
-                    blob = new Blob(form_data, header);
+                    blob = new Blob(formBody.join("&"), header);
                     return _context.abrupt('return', navigator.sendBeacon(BASE_URL + serviceURL + url, blob));
 
                 case 20:
