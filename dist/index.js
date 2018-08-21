@@ -136,6 +136,8 @@ function callAPI() {
 
                     if (service === "PLATFORM") {
                         serviceURL = "/platform";
+                    } else if (service === "PROFILE") {
+                        serviceURL = "/profile";
                     }
 
                     if (!(beacon === true && 'sendBeacon' in navigator)) {
@@ -182,6 +184,8 @@ function callAPI() {
                         req = req.query(query).get();
                     } else if (method === "POST") {
                         req = req.post(body);
+                    } else if (method === "DELETE") {
+                        req = req.delete();
                     }
                     _context.next = 33;
                     return req.json(function (res) {

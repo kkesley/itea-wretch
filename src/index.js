@@ -57,6 +57,8 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     var serviceURL = ""
     if(service === "PLATFORM"){
         serviceURL = "/platform"
+    }else if (service === "PROFILE"){
+        serviceURL = "/profile"
     }
     if(beacon === true && 'sendBeacon' in navigator){
         var form_data = new FormData();
@@ -81,6 +83,8 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         req = req.query(query).get()
     }else if(method === "POST"){
         req = req.post(body)
+    }else if(method === "DELETE"){
+        req = req.delete()
     }
     res = yield req.json(res => ({status: 200, body: res})).catch(err => ({status: err.status, body: err.message}))
     if(!listener && listenCode.indexOf(res.status) >= 0){
