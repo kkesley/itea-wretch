@@ -34,7 +34,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var _marked = /*#__PURE__*/_regenerator2.default.mark(callAPI);
 
 var SERVICES = exports.SERVICES = {
-    PLATFORM: "PLATFORM"
+    PLATFORM: "PLATFORM",
+    PROFILE: "PROFILE"
 };
 var BASE_URL = exports.BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com";
 var API = exports.API = function API() {

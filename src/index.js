@@ -4,7 +4,8 @@ import moment from 'moment-timezone'
 import {put} from 'redux-saga/effects'
 import storage from 'store'
 export const SERVICES = {
-    PLATFORM: "PLATFORM"
+    PLATFORM: "PLATFORM",
+    PROFILE: "PROFILE",
 }
 export const BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com"
 export const API = ({auth} = {auth: null}) => {
