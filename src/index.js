@@ -95,10 +95,19 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     }else if(method === "DELETE"){
         req = req.delete()
     }
-    res = yield req.res(res => ({status: res.status, body: res.body})).catch(err => ({status: err.status, body: err.message}))
-    if(isJson(res.body)){
-        res.body = JSON.parse(res.body)
-    }
+    res = yield req.res(res => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            return response.json()
+        } else {
+            return response.text()
+        }
+    })
+    .then(data => {
+        console.log(data)
+        return ({status: 200, body: data})
+    })
+    .catch(err => ({status: err.status, body: err.message}))
     if(!listener && listenCode.indexOf(res.status) >= 0){
         return res
     }else{

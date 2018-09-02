@@ -198,7 +198,15 @@ function callAPI() {
                     }
                     _context.next = 33;
                     return req.res(function (res) {
-                        return { status: res.status, body: res.body };
+                        var contentType = response.headers.get("content-type");
+                        if (contentType && contentType.indexOf("application/json") !== -1) {
+                            return response.json();
+                        } else {
+                            return response.text();
+                        }
+                    }).then(function (data) {
+                        console.log(data);
+                        return { status: 200, body: data };
                     }).catch(function (err) {
                         return { status: err.status, body: err.message };
                     });
@@ -206,22 +214,18 @@ function callAPI() {
                 case 33:
                     res = _context.sent;
 
-                    if (isJson(res.body)) {
-                        res.body = JSON.parse(res.body);
-                    }
-
                     if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
-                        _context.next = 39;
+                        _context.next = 38;
                         break;
                     }
 
                     return _context.abrupt('return', res);
 
-                case 39:
-                    _context.next = 41;
+                case 38:
+                    _context.next = 40;
                     return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
-                case 41:
+                case 40:
                 case 'end':
                     return _context.stop();
             }
