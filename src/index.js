@@ -105,6 +105,8 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     })
     .then(text => {
         var data = text
+        console.log("is it here")
+        console.log(data)
         try {
             data = JSON.parse(text);
         } catch(err) {

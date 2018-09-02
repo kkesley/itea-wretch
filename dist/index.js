@@ -206,6 +206,8 @@ function callAPI() {
                         }
                     }).then(function (text) {
                         var data = text;
+                        console.log("is it here");
+                        console.log(data);
                         try {
                             data = JSON.parse(text);
                         } catch (err) {
