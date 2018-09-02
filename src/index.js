@@ -107,7 +107,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         } catch(err) {
            // text is not json
         }
-        return ({status: successStatus, body: data})
+        return {status: successStatus, body: data}
     })
     .catch(err => ({status: err.status, body: err.message}))
     if(!listener && listenCode.indexOf(res.status) >= 0){
