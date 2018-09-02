@@ -191,9 +191,11 @@ function callAPI() {
                     status = 200;
                     _context.next = 34;
                     return req.res(function (response) {
+                        console.log("RESPONSE");
                         status = response.status;
                         return response.text();
                     }).catch(function (err) {
+                        console.log("CATCH ERR");
                         status = err.status;
                         return err.message;
                     }).then(function (text) {

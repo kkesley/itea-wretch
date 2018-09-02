@@ -89,10 +89,12 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     }
     var status = 200
     res = yield req.res(response => {
+        console.log("RESPONSE")
         status = response.status
         return response.text()
     })
     .catch(err => {
+        console.log("CATCH ERR")
         status = err.status
         return err.message
     })
