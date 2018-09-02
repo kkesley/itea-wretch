@@ -94,7 +94,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     })
     .catch(err => {
         status = err.status
-        return err.text()
+        return err.message
     })
     .then(text => {
         var data = text

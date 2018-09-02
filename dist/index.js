@@ -195,7 +195,7 @@ function callAPI() {
                         return response.text();
                     }).catch(function (err) {
                         status = err.status;
-                        return err.text();
+                        return err.message;
                     }).then(function (text) {
                         var data = text;
                         try {
