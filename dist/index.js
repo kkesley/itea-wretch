@@ -37,14 +37,6 @@ var SERVICES = exports.SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE"
 };
-function isJson(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
 var BASE_URL = exports.BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com";
 var API = exports.API = function API() {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { auth: null },
@@ -198,14 +190,18 @@ function callAPI() {
                     }
                     successStatus = 200;
                     _context.next = 34;
-                    return req.res(function (res) {
-                        successStatus = res.status;
-                        if (res.ok) {
-                            return res.text();
+                    return req.res(function (response) {
+                        successStatus = response.status;
+                        if (response.ok) {
+                            console.log("OK");
+                            console.log(response);
+                            return response.text();
                         } else {
+                            console.log("NOT OK");
+                            console.log(response);
                             throw {
-                                status: res.status,
-                                message: res.body
+                                status: response.status,
+                                message: response.body
                             };
                         }
                     }).then(function (text) {
@@ -223,18 +219,20 @@ function callAPI() {
                 case 34:
                     res = _context.sent;
 
+                    console.log(res);
+
                     if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
-                        _context.next = 39;
+                        _context.next = 40;
                         break;
                     }
 
                     return _context.abrupt('return', res);
 
-                case 39:
-                    _context.next = 41;
+                case 40:
+                    _context.next = 42;
                     return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
-                case 41:
+                case 42:
                 case 'end':
                     return _context.stop();
             }
