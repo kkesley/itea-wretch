@@ -102,7 +102,7 @@ function callAPI() {
         auth = _ref2.auth,
         beacon = _ref2.beacon;
 
-    var mainHandler, serviceURL, form_data, key, serviceAPI, req, res;
+    var mainHandler, serviceURL, form_data, key, serviceAPI, req, res, successStatus;
     return _regenerator2.default.wrap(function callAPI$(_context) {
         while (1) {
             switch (_context.prev = _context.next) {
@@ -196,36 +196,38 @@ function callAPI() {
                     } else if (method === "DELETE") {
                         req = req.delete();
                     }
-                    _context.next = 33;
+                    successStatus = 200;
+                    _context.next = 34;
                     return req.res(function (res) {
-                        var contentType = res.headers.get("content-type");
-                        if (contentType && contentType.indexOf("application/json") !== -1) {
-                            return res.json();
-                        } else {
-                            return res.text();
+                        successStatus = res.status;
+                        return res.text();
+                    }).then(function (text) {
+                        var data = text;
+                        try {
+                            data = JSON.parse(text);
+                        } catch (err) {
+                            // text is not json
                         }
-                    }).then(function (data) {
-                        console.log(data);
-                        return { status: 200, body: data };
+                        return { status: successStatus, body: data };
                     }).catch(function (err) {
                         return { status: err.status, body: err.message };
                     });
 
-                case 33:
+                case 34:
                     res = _context.sent;
 
                     if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
-                        _context.next = 38;
+                        _context.next = 39;
                         break;
                     }
 
                     return _context.abrupt('return', res);
 
-                case 38:
-                    _context.next = 40;
+                case 39:
+                    _context.next = 41;
                     return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
-                case 40:
+                case 41:
                 case 'end':
                     return _context.stop();
             }
