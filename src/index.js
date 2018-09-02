@@ -96,11 +96,11 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         req = req.delete()
     }
     res = yield req.res(res => {
-        const contentType = response.headers.get("content-type");
+        const contentType = res.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
-            return response.json()
+            return res.json()
         } else {
-            return response.text()
+            return res.text()
         }
     })
     .then(data => {

@@ -198,11 +198,11 @@ function callAPI() {
                     }
                     _context.next = 33;
                     return req.res(function (res) {
-                        var contentType = response.headers.get("content-type");
+                        var contentType = res.headers.get("content-type");
                         if (contentType && contentType.indexOf("application/json") !== -1) {
-                            return response.json();
+                            return res.json();
                         } else {
-                            return response.text();
+                            return res.text();
                         }
                     }).then(function (data) {
                         console.log(data);
