@@ -7,6 +7,14 @@ export const SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
 }
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
 export const BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com"
 export const API = ({auth} = {auth: null}) => {
     
@@ -87,11 +95,10 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     }else if(method === "DELETE"){
         req = req.delete()
     }
-    res = yield req.res(res => {
-        console.log(res)
-        return {status: 200, body: res}
-    })
-    res = yield res.body.json(res => ({status: 200, body: res})).catch(err => ({status: err.status, body: err.message}))
+    res = yield req.res(res => ({status: res.status, body: res.body})).catch(err => ({status: err.status, body: err.message}))
+    if(isJson(res.body)){
+        res.body = JSON.parse(res.body)
+    }
     if(!listener && listenCode.indexOf(res.status) >= 0){
         return res
     }else{
