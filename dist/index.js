@@ -189,27 +189,35 @@ function callAPI() {
                         req = req.delete();
                     }
                     _context.next = 33;
-                    return req.json(function (res) {
+                    return req.res(function (res) {
+                        console.log(res);
+                        return { status: 200, body: res };
+                    });
+
+                case 33:
+                    res = _context.sent;
+                    _context.next = 36;
+                    return res.body.json(function (res) {
                         return { status: 200, body: res };
                     }).catch(function (err) {
                         return { status: err.status, body: err.message };
                     });
 
-                case 33:
+                case 36:
                     res = _context.sent;
 
                     if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
-                        _context.next = 38;
+                        _context.next = 41;
                         break;
                     }
 
                     return _context.abrupt('return', res);
 
-                case 38:
-                    _context.next = 40;
+                case 41:
+                    _context.next = 43;
                     return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
-                case 40:
+                case 43:
                 case 'end':
                     return _context.stop();
             }
