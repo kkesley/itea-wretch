@@ -87,35 +87,24 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     }else if(method === "DELETE"){
         req = req.delete()
     }
-    var successStatus = 200
+    var status = 200
     res = yield req.res(response => {
-        successStatus = response.status
-        if(response.ok){
-            console.log("OK")
-            console.log(response)
-            return response.text()
-        }else{
-            console.log("NOT OK")
-            console.log(response)
-            throw {
-                status: response.status,
-                message: response.body
-            }
-        }
+        status = response.status
+        return response.text()
+    })
+    .catch(err => {
+        status = err.status
+        return err.text()
     })
     .then(text => {
         var data = text
-        console.log("is it here")
-        console.log(data)
         try {
             data = JSON.parse(text);
         } catch(err) {
            // text is not json
         }
-        return {status: successStatus, body: data}
+        return {status: status, body: data}
     })
-    .catch(err => ({status: err.status, body: err.message}))
-    console.log(res)
     if(!listener && listenCode.indexOf(res.status) >= 0){
         return res
     }else{
