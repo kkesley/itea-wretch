@@ -98,7 +98,14 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     var successStatus = 200
     res = yield req.res(res => {
         successStatus = res.status
-        return res.text()
+        if(res.ok){
+            return res.text()
+        }else{
+            throw {
+                status: res.status,
+                message: res.body
+            }
+        }
     })
     .then(text => {
         var data = text

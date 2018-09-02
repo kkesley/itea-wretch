@@ -200,7 +200,14 @@ function callAPI() {
                     _context.next = 34;
                     return req.res(function (res) {
                         successStatus = res.status;
-                        return res.text();
+                        if (res.ok) {
+                            return res.text();
+                        } else {
+                            throw {
+                                status: res.status,
+                                message: res.body
+                            };
+                        }
                     }).then(function (text) {
                         var data = text;
                         try {
