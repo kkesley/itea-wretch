@@ -162,7 +162,7 @@ function callAPI() {
                     return _context.abrupt('return', navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data));
 
                 case 18:
-                    serviceAPI = API({ auth: auth });
+                    serviceAPI = API({ auth: auth, apiEndpoint: apiEndpoint });
 
                     serviceAPI = serviceAPI.url(serviceURL);
 

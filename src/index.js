@@ -73,7 +73,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         }
         return navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data);
     }
-    var serviceAPI = API({auth})
+    var serviceAPI = API({auth, apiEndpoint})
     serviceAPI = serviceAPI.url(serviceURL)
     if(serviceAPI === null){
         if(!listener && listenCode.indexOf(501) >= 0){
