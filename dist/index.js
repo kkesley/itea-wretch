@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.API = exports.BASE_URL = exports.SERVICES = undefined;
+exports.API = exports.SERVICES = undefined;
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -35,16 +35,21 @@ var _marked = /*#__PURE__*/_regenerator2.default.mark(callAPI);
 
 var SERVICES = exports.SERVICES = {
     PLATFORM: "PLATFORM",
-    PROFILE: "PROFILE"
+    PROFILE: "PROFILE",
+    EDUCATION: "EDUCATION"
 };
-var BASE_URL = exports.BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com";
+var URL = {
+    itea: process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com",
+    edvise: process.env.NODE_ENV === "prod" ? "https://api.edvise.id" : "https://dev-api.edvise.id"
+};
 var API = exports.API = function API() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { auth: null },
-        auth = _ref.auth;
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { auth: null, apiEndpoint: "itea" },
+        auth = _ref.auth,
+        apiEndpoint = _ref.apiEndpoint;
 
     var apiHandler = (0, _wretch2.default)()
     // Set the base url
-    .url(BASE_URL)
+    .url(URL[apiEndpoint] || URL.itea)
     // Set headers
     .headers({
         "tz": _momentTimezone2.default.tz.guess(),
@@ -83,7 +88,7 @@ var API = exports.API = function API() {
 };
 
 function callAPI() {
-    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false },
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea" },
         service = _ref2.service,
         url = _ref2.url,
         method = _ref2.method,
@@ -92,7 +97,8 @@ function callAPI() {
         listener = _ref2.listener,
         listenCode = _ref2.listenCode,
         auth = _ref2.auth,
-        beacon = _ref2.beacon;
+        beacon = _ref2.beacon,
+        apiEndpoint = _ref2.apiEndpoint;
 
     var mainHandler, serviceURL, form_data, key, serviceAPI, req, res;
     return _regenerator2.default.wrap(function callAPI$(_context) {
@@ -139,6 +145,8 @@ function callAPI() {
                         serviceURL = "/platform";
                     } else if (service === "PROFILE") {
                         serviceURL = "/profile";
+                    } else if (service === "EDUCATION") {
+                        serviceURL = "/education";
                     }
 
                     if (!(beacon === true && 'sendBeacon' in navigator)) {
@@ -151,7 +159,7 @@ function callAPI() {
                     for (key in body) {
                         form_data.append(key, body[key]);
                     }
-                    return _context.abrupt('return', navigator.sendBeacon(BASE_URL + serviceURL + url, form_data));
+                    return _context.abrupt('return', navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data));
 
                 case 18:
                     serviceAPI = API({ auth: auth });

@@ -6,13 +6,16 @@ import storage from 'store'
 export const SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
+    EDUCATION: "EDUCATION"
 }
-export const BASE_URL = process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com"
-export const API = ({auth} = {auth: null}) => {
-    
+const URL = {
+    itea: process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com",
+    edvise: process.env.NODE_ENV === "prod" ? "https://api.edvise.id" : "https://dev-api.edvise.id"
+}
+export const API = ({auth, apiEndpoint} = {auth: null, apiEndpoint: "itea"}) => {
     const apiHandler = wretch()
     // Set the base url
-    .url(BASE_URL)
+    .url(URL[apiEndpoint] || URL.itea)
     // Set headers
     .headers({ 
         "tz": moment.tz.guess(), 
@@ -34,7 +37,7 @@ export const API = ({auth} = {auth: null}) => {
     return apiHandler
 }
 
-export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false}){
+export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon, apiEndpoint} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea"}){
     const mainHandler = "@@ITEACLOUD/REQ.MAIN"
     if(!Array.isArray(listenCode)){
         listenCode = []
@@ -60,13 +63,15 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         serviceURL = "/platform"
     }else if (service === "PROFILE"){
         serviceURL = "/profile"
+    }else if (service === "EDUCATION"){
+        serviceURL = "/education"
     }
     if(beacon === true && 'sendBeacon' in navigator){
         var form_data = new FormData();
         for ( var key in body ) {
             form_data.append(key, body[key]);
         }
-        return navigator.sendBeacon(BASE_URL + serviceURL + url, form_data);
+        return navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data);
     }
     var serviceAPI = API({auth})
     serviceAPI = serviceAPI.url(serviceURL)
