@@ -105,6 +105,18 @@ function callAPI() {
         while (1) {
             switch (_context.prev = _context.next) {
                 case 0:
+                    _context.next = 2;
+                    return (0, _effects.put)({ type: "@@ITEACLOUD/REQ.OFFLINE", offline: navigator.onLine });
+
+                case 2:
+                    if (!(navigator.onLine === false)) {
+                        _context.next = 4;
+                        break;
+                    }
+
+                    return _context.abrupt('return', null);
+
+                case 4:
                     mainHandler = "@@ITEACLOUD/REQ.MAIN";
 
                     if (!Array.isArray(listenCode)) {
@@ -115,25 +127,25 @@ function callAPI() {
                     }
 
                     if (!(typeof service !== "string" || typeof method !== "string")) {
-                        _context.next = 11;
+                        _context.next = 15;
                         break;
                     }
 
                     if (!(!listener && listenCode.indexOf(400) >= 0)) {
-                        _context.next = 8;
+                        _context.next = 12;
                         break;
                     }
 
                     return _context.abrupt('return', { status: 400, body: "no service or url provided" });
 
-                case 8:
-                    _context.next = 10;
+                case 12:
+                    _context.next = 14;
                     return (0, _effects.put)({ type: listenCode.indexOf(400) >= 0 ? listener : mainHandler, status: 400, body: "no service or url provided" });
 
-                case 10:
+                case 14:
                     return _context.abrupt('return');
 
-                case 11:
+                case 15:
                     if (typeof auth !== "string") {
                         auth = null;
                     } else if (auth.length <= 0) {
@@ -150,7 +162,7 @@ function callAPI() {
                     }
 
                     if (!(beacon === true && 'sendBeacon' in navigator)) {
-                        _context.next = 18;
+                        _context.next = 22;
                         break;
                     }
 
@@ -161,31 +173,31 @@ function callAPI() {
                     }
                     return _context.abrupt('return', navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data));
 
-                case 18:
+                case 22:
                     serviceAPI = API({ auth: auth, apiEndpoint: apiEndpoint });
 
                     serviceAPI = serviceAPI.url(serviceURL);
 
                     if (!(serviceAPI === null)) {
-                        _context.next = 28;
+                        _context.next = 32;
                         break;
                     }
 
                     if (!(!listener && listenCode.indexOf(501) >= 0)) {
-                        _context.next = 25;
+                        _context.next = 29;
                         break;
                     }
 
                     return _context.abrupt('return', { status: 501, body: 'Service not available' });
 
-                case 25:
-                    _context.next = 27;
+                case 29:
+                    _context.next = 31;
                     return (0, _effects.put)({ type: listenCode.indexOf(501) >= 0 ? listener : mainHandler, status: 501, body: 'Service not available' });
 
-                case 27:
+                case 31:
                     return _context.abrupt('return');
 
-                case 28:
+                case 32:
                     req = serviceAPI.url(url);
                     res = null;
 
@@ -196,7 +208,7 @@ function callAPI() {
                     } else if (method === "DELETE") {
                         req = req.delete();
                     }
-                    _context.next = 33;
+                    _context.next = 37;
                     return req.text(function (text) {
                         var data = text;
                         var status = 200;
@@ -208,21 +220,21 @@ function callAPI() {
                         return { status: err.status, body: err.message };
                     });
 
-                case 33:
+                case 37:
                     res = _context.sent;
 
                     if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
-                        _context.next = 38;
+                        _context.next = 42;
                         break;
                     }
 
                     return _context.abrupt('return', res);
 
-                case 38:
-                    _context.next = 40;
+                case 42:
+                    _context.next = 44;
                     return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
-                case 40:
+                case 44:
                 case 'end':
                     return _context.stop();
             }
