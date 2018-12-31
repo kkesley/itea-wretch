@@ -106,7 +106,7 @@ function callAPI() {
             switch (_context.prev = _context.next) {
                 case 0:
                     _context.next = 2;
-                    return (0, _effects.put)({ type: "@@ITEACLOUD/REQ.OFFLINE", offline: navigator.onLine });
+                    return (0, _effects.put)({ type: "@@ITEACLOUD/REQ.OFFLINE", offline: !navigator.onLine });
 
                 case 2:
                     if (!(navigator.onLine === false)) {

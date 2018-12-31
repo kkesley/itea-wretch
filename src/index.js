@@ -38,7 +38,7 @@ export const API = ({auth, apiEndpoint} = {auth: null, apiEndpoint: "itea"}) => 
 }
 
 export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon, apiEndpoint} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea"}){
-    yield put({type: "@@ITEACLOUD/REQ.OFFLINE", offline: navigator.onLine})
+    yield put({type: "@@ITEACLOUD/REQ.OFFLINE", offline: !navigator.onLine})
     if(navigator.onLine === false){
         return null
     }
