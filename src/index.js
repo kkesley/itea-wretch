@@ -6,7 +6,8 @@ import storage from 'store'
 export const SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
-    EDUCATION: "EDUCATION"
+    EDUCATION: "EDUCATION",
+    COMMENT: "COMMENT"
 }
 const URL = {
     itea: process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com",
@@ -64,12 +65,14 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         auth = null
     }
     var serviceURL = ""
-    if(service === "PLATFORM"){
+    if(service === SERVICES.PLATFORM){
         serviceURL = "/platform"
-    }else if (service === "PROFILE"){
+    }else if (service === SERVICES.PROFILE){
         serviceURL = "/profile"
-    }else if (service === "EDUCATION"){
+    }else if (service === SERVICES.EDUCATION){
         serviceURL = "/education"
+    }else if (service === SERVICES.COMMENT){
+        serviceURL = "/comment"
     }
     if(beacon === true && 'sendBeacon' in navigator){
         var form_data = new FormData();
