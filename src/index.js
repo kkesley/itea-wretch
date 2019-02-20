@@ -108,7 +108,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         try {
             data = JSON.parse(data)
         }catch(e){
-        
+            
         }
         return {status: status, body: data}
     }).catch(err => ({status: err.status, body: err.message}))
