@@ -54,7 +54,7 @@ var API = exports.API = function API() {
     // Set headers
     .headers({
         "tz": _momentTimezone2.default.tz.guess(),
-        "lang": _store2.default.get("lang") || "id"
+        "lang": store.enabled ? _store2.default.get("lang") || "id" : "en"
     })
     // Handle 500 errors
     .resolve(function (_) {

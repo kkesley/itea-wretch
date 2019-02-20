@@ -20,7 +20,7 @@ export const API = ({auth, apiEndpoint} = {auth: null, apiEndpoint: "itea"}) => 
     // Set headers
     .headers({ 
         "tz": moment.tz.guess(), 
-        "lang": storage.get("lang") || "id" 
+        "lang": store.enabled ? (storage.get("lang") || "id" ) : "en"
     })
     // Handle 500 errors
     .resolve(_=>_.internalError(err => ({status: 500, body: err.message})))
