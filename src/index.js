@@ -39,9 +39,11 @@ export const API = ({auth, apiEndpoint} = {auth: null, apiEndpoint: "itea"}) => 
 }
 
 export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon, apiEndpoint} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea"}){
-    yield put({type: "@@ITEACLOUD/REQ.OFFLINE", offline: !navigator.onLine})
-    if(navigator.onLine === false){
-        return null
+    if(navigator){
+        yield put({type: "@@ITEACLOUD/REQ.OFFLINE", offline: !navigator.onLine})
+        if(navigator.onLine === false){
+            return null
+        }
     }
     
     const mainHandler = "@@ITEACLOUD/REQ.MAIN"
@@ -74,7 +76,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
     }else if (service === SERVICES.COMMENT){
         serviceURL = "/comment"
     }
-    if(beacon === true && 'sendBeacon' in navigator){
+    if(navigator && beacon === true && 'sendBeacon' in navigator){
         var form_data = new FormData();
         for ( var key in body ) {
             form_data.append(key, body[key]);
