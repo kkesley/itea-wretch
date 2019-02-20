@@ -4,6 +4,7 @@ import moment from 'moment-timezone'
 import {put} from 'redux-saga/effects'
 import 'url-search-params-polyfill';
 export const SERVICES = {
+    NOTIFICATION: "NOTIFICATION",
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
     EDUCATION: "EDUCATION",
@@ -75,6 +76,8 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         serviceURL = "/education"
     }else if (service === SERVICES.COMMENT){
         serviceURL = "/comment"
+    }else if (service === SERVICES.NOTIFICATION){
+        serviceURL = "/notification"
     }
     if(navigator && beacon === true && 'sendBeacon' in navigator){
         var form_data = new FormData();
