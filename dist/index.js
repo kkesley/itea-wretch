@@ -25,10 +25,6 @@ var _momentTimezone2 = _interopRequireDefault(_momentTimezone);
 
 var _effects = require('redux-saga/effects');
 
-var _store = require('store');
-
-var _store2 = _interopRequireDefault(_store);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _marked = /*#__PURE__*/_regenerator2.default.mark(callAPI);
@@ -44,9 +40,10 @@ var URL = {
     edvise: process.env.NODE_ENV === "prod" ? "https://api.edvise.id" : "https://dev-api.edvise.id"
 };
 var API = exports.API = function API() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { auth: null, apiEndpoint: "itea" },
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { auth: null, apiEndpoint: "itea", lang: "id" },
         auth = _ref.auth,
-        apiEndpoint = _ref.apiEndpoint;
+        apiEndpoint = _ref.apiEndpoint,
+        lang = _ref.lang;
 
     var apiHandler = (0, _wretch2.default)()
     // Set the base url
@@ -54,7 +51,7 @@ var API = exports.API = function API() {
     // Set headers
     .headers({
         "tz": _momentTimezone2.default.tz.guess(),
-        "lang": store.enabled ? _store2.default.get("lang") || "id" : "en"
+        "lang": lang || "id"
     })
     // Handle 500 errors
     .resolve(function (_) {
@@ -89,7 +86,7 @@ var API = exports.API = function API() {
 };
 
 function callAPI() {
-    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea" },
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea", lang: "id" },
         service = _ref2.service,
         url = _ref2.url,
         method = _ref2.method,
@@ -99,7 +96,8 @@ function callAPI() {
         listenCode = _ref2.listenCode,
         auth = _ref2.auth,
         beacon = _ref2.beacon,
-        apiEndpoint = _ref2.apiEndpoint;
+        apiEndpoint = _ref2.apiEndpoint,
+        lang = _ref2.lang;
 
     var mainHandler, serviceURL, form_data, key, serviceAPI, req, res;
     return _regenerator2.default.wrap(function callAPI$(_context) {
@@ -182,7 +180,7 @@ function callAPI() {
                     return _context.abrupt('return', navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data));
 
                 case 23:
-                    serviceAPI = API({ auth: auth, apiEndpoint: apiEndpoint });
+                    serviceAPI = API({ auth: auth, apiEndpoint: apiEndpoint, lang: lang });
 
                     serviceAPI = serviceAPI.url(serviceURL);
 

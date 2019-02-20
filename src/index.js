@@ -2,7 +2,6 @@
 import wretch from 'wretch'
 import moment from 'moment-timezone'
 import {put} from 'redux-saga/effects'
-import storage from 'store'
 export const SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
@@ -13,14 +12,14 @@ const URL = {
     itea: process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com",
     edvise: process.env.NODE_ENV === "prod" ? "https://api.edvise.id" : "https://dev-api.edvise.id"
 }
-export const API = ({auth, apiEndpoint} = {auth: null, apiEndpoint: "itea"}) => {
+export const API = ({auth, apiEndpoint, lang} = {auth: null, apiEndpoint: "itea", lang: "id"}) => {
     const apiHandler = wretch()
     // Set the base url
     .url(URL[apiEndpoint] || URL.itea)
     // Set headers
     .headers({ 
         "tz": moment.tz.guess(), 
-        "lang": store.enabled ? (storage.get("lang") || "id" ) : "en"
+        "lang": lang || "id"
     })
     // Handle 500 errors
     .resolve(_=>_.internalError(err => ({status: 500, body: err.message})))
@@ -38,7 +37,7 @@ export const API = ({auth, apiEndpoint} = {auth: null, apiEndpoint: "itea"}) => 
     return apiHandler
 }
 
-export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon, apiEndpoint} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea"}){
+export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon, apiEndpoint, lang} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea", lang: "id"}){
     if(navigator){
         yield put({type: "@@ITEACLOUD/REQ.OFFLINE", offline: !navigator.onLine})
         if(navigator.onLine === false){
@@ -83,7 +82,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         }
         return navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data);
     }
-    var serviceAPI = API({auth, apiEndpoint})
+    var serviceAPI = API({auth, apiEndpoint, lang})
     serviceAPI = serviceAPI.url(serviceURL)
     if(serviceAPI === null){
         if(!listener && listenCode.indexOf(501) >= 0){
