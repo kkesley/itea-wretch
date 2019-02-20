@@ -25,9 +25,7 @@ var _momentTimezone2 = _interopRequireDefault(_momentTimezone);
 
 var _effects = require('redux-saga/effects');
 
-var _store = require('store');
-
-var _store2 = _interopRequireDefault(_store);
+require('url-search-params-polyfill');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,16 +34,18 @@ var _marked = /*#__PURE__*/_regenerator2.default.mark(callAPI);
 var SERVICES = exports.SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
-    EDUCATION: "EDUCATION"
+    EDUCATION: "EDUCATION",
+    COMMENT: "COMMENT"
 };
 var URL = {
     itea: process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com",
     edvise: process.env.NODE_ENV === "prod" ? "https://api.edvise.id" : "https://dev-api.edvise.id"
 };
 var API = exports.API = function API() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { auth: null, apiEndpoint: "itea" },
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { auth: null, apiEndpoint: "itea", lang: "id" },
         auth = _ref.auth,
-        apiEndpoint = _ref.apiEndpoint;
+        apiEndpoint = _ref.apiEndpoint,
+        lang = _ref.lang;
 
     var apiHandler = (0, _wretch2.default)()
     // Set the base url
@@ -53,7 +53,7 @@ var API = exports.API = function API() {
     // Set headers
     .headers({
         "tz": _momentTimezone2.default.tz.guess(),
-        "lang": _store2.default.get("lang") || "id"
+        "lang": lang || "id"
     })
     // Handle 500 errors
     .resolve(function (_) {
@@ -88,7 +88,7 @@ var API = exports.API = function API() {
 };
 
 function callAPI() {
-    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea" },
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { service: "PLATFORM", url: "", method: "GET", body: {}, query: "", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea", lang: "id" },
         service = _ref2.service,
         url = _ref2.url,
         method = _ref2.method,
@@ -98,25 +98,31 @@ function callAPI() {
         listenCode = _ref2.listenCode,
         auth = _ref2.auth,
         beacon = _ref2.beacon,
-        apiEndpoint = _ref2.apiEndpoint;
+        apiEndpoint = _ref2.apiEndpoint,
+        lang = _ref2.lang;
 
     var mainHandler, serviceURL, form_data, key, serviceAPI, req, res;
     return _regenerator2.default.wrap(function callAPI$(_context) {
         while (1) {
             switch (_context.prev = _context.next) {
                 case 0:
-                    _context.next = 2;
+                    if (!navigator) {
+                        _context.next = 5;
+                        break;
+                    }
+
+                    _context.next = 3;
                     return (0, _effects.put)({ type: "@@ITEACLOUD/REQ.OFFLINE", offline: !navigator.onLine });
 
-                case 2:
+                case 3:
                     if (!(navigator.onLine === false)) {
-                        _context.next = 4;
+                        _context.next = 5;
                         break;
                     }
 
                     return _context.abrupt('return', null);
 
-                case 4:
+                case 5:
                     mainHandler = "@@ITEACLOUD/REQ.MAIN";
 
                     if (!Array.isArray(listenCode)) {
@@ -127,25 +133,25 @@ function callAPI() {
                     }
 
                     if (!(typeof service !== "string" || typeof method !== "string")) {
-                        _context.next = 15;
+                        _context.next = 16;
                         break;
                     }
 
                     if (!(!listener && listenCode.indexOf(400) >= 0)) {
-                        _context.next = 12;
+                        _context.next = 13;
                         break;
                     }
 
                     return _context.abrupt('return', { status: 400, body: "no service or url provided" });
 
-                case 12:
-                    _context.next = 14;
+                case 13:
+                    _context.next = 15;
                     return (0, _effects.put)({ type: listenCode.indexOf(400) >= 0 ? listener : mainHandler, status: 400, body: "no service or url provided" });
 
-                case 14:
+                case 15:
                     return _context.abrupt('return');
 
-                case 15:
+                case 16:
                     if (typeof auth !== "string") {
                         auth = null;
                     } else if (auth.length <= 0) {
@@ -153,16 +159,18 @@ function callAPI() {
                     }
                     serviceURL = "";
 
-                    if (service === "PLATFORM") {
+                    if (service === SERVICES.PLATFORM) {
                         serviceURL = "/platform";
-                    } else if (service === "PROFILE") {
+                    } else if (service === SERVICES.PROFILE) {
                         serviceURL = "/profile";
-                    } else if (service === "EDUCATION") {
+                    } else if (service === SERVICES.EDUCATION) {
                         serviceURL = "/education";
+                    } else if (service === SERVICES.COMMENT) {
+                        serviceURL = "/comment";
                     }
 
-                    if (!(beacon === true && 'sendBeacon' in navigator)) {
-                        _context.next = 22;
+                    if (!(navigator && beacon === true && 'sendBeacon' in navigator)) {
+                        _context.next = 23;
                         break;
                     }
 
@@ -173,31 +181,31 @@ function callAPI() {
                     }
                     return _context.abrupt('return', navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data));
 
-                case 22:
-                    serviceAPI = API({ auth: auth, apiEndpoint: apiEndpoint });
+                case 23:
+                    serviceAPI = API({ auth: auth, apiEndpoint: apiEndpoint, lang: lang });
 
                     serviceAPI = serviceAPI.url(serviceURL);
 
                     if (!(serviceAPI === null)) {
-                        _context.next = 32;
+                        _context.next = 33;
                         break;
                     }
 
                     if (!(!listener && listenCode.indexOf(501) >= 0)) {
-                        _context.next = 29;
+                        _context.next = 30;
                         break;
                     }
 
                     return _context.abrupt('return', { status: 501, body: 'Service not available' });
 
-                case 29:
-                    _context.next = 31;
+                case 30:
+                    _context.next = 32;
                     return (0, _effects.put)({ type: listenCode.indexOf(501) >= 0 ? listener : mainHandler, status: 501, body: 'Service not available' });
 
-                case 31:
+                case 32:
                     return _context.abrupt('return');
 
-                case 32:
+                case 33:
                     req = serviceAPI.url(url);
                     res = null;
 
@@ -208,7 +216,7 @@ function callAPI() {
                     } else if (method === "DELETE") {
                         req = req.delete();
                     }
-                    _context.next = 37;
+                    _context.next = 38;
                     return req.text(function (text) {
                         var data = text;
                         var status = 200;
@@ -220,21 +228,21 @@ function callAPI() {
                         return { status: err.status, body: err.message };
                     });
 
-                case 37:
+                case 38:
                     res = _context.sent;
 
                     if (!(!listener && listenCode.indexOf(res.status) >= 0)) {
-                        _context.next = 42;
+                        _context.next = 43;
                         break;
                     }
 
                     return _context.abrupt('return', res);
 
-                case 42:
-                    _context.next = 44;
+                case 43:
+                    _context.next = 45;
                     return (0, _effects.put)((0, _extends3.default)({ type: listenCode.indexOf(res.status) >= 0 ? listener : mainHandler }, res));
 
-                case 44:
+                case 45:
                 case 'end':
                     return _context.stop();
             }

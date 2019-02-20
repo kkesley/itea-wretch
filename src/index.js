@@ -2,24 +2,25 @@
 import wretch from 'wretch'
 import moment from 'moment-timezone'
 import {put} from 'redux-saga/effects'
-import storage from 'store'
+import 'url-search-params-polyfill';
 export const SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
-    EDUCATION: "EDUCATION"
+    EDUCATION: "EDUCATION",
+    COMMENT: "COMMENT"
 }
 const URL = {
     itea: process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com",
     edvise: process.env.NODE_ENV === "prod" ? "https://api.edvise.id" : "https://dev-api.edvise.id"
 }
-export const API = ({auth, apiEndpoint} = {auth: null, apiEndpoint: "itea"}) => {
+export const API = ({auth, apiEndpoint, lang} = {auth: null, apiEndpoint: "itea", lang: "id"}) => {
     const apiHandler = wretch()
     // Set the base url
     .url(URL[apiEndpoint] || URL.itea)
     // Set headers
     .headers({ 
         "tz": moment.tz.guess(), 
-        "lang": storage.get("lang") || "id" 
+        "lang": lang || "id"
     })
     // Handle 500 errors
     .resolve(_=>_.internalError(err => ({status: 500, body: err.message})))
@@ -37,10 +38,12 @@ export const API = ({auth, apiEndpoint} = {auth: null, apiEndpoint: "itea"}) => 
     return apiHandler
 }
 
-export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon, apiEndpoint} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea"}){
-    yield put({type: "@@ITEACLOUD/REQ.OFFLINE", offline: !navigator.onLine})
-    if(navigator.onLine === false){
-        return null
+export function* callAPI({service, url, method, body, query, listener, listenCode, auth, beacon, apiEndpoint, lang} = {service: "PLATFORM", url: "", method: "GET", body:{}, query:"", listener: "@@ITEACLOUD/REQ.MAIN", listenCode: [], auth: null, beacon: false, apiEndpoint: "itea", lang: "id"}){
+    if(navigator){
+        yield put({type: "@@ITEACLOUD/REQ.OFFLINE", offline: !navigator.onLine})
+        if(navigator.onLine === false){
+            return null
+        }
     }
     
     const mainHandler = "@@ITEACLOUD/REQ.MAIN"
@@ -64,21 +67,23 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         auth = null
     }
     var serviceURL = ""
-    if(service === "PLATFORM"){
+    if(service === SERVICES.PLATFORM){
         serviceURL = "/platform"
-    }else if (service === "PROFILE"){
+    }else if (service === SERVICES.PROFILE){
         serviceURL = "/profile"
-    }else if (service === "EDUCATION"){
+    }else if (service === SERVICES.EDUCATION){
         serviceURL = "/education"
+    }else if (service === SERVICES.COMMENT){
+        serviceURL = "/comment"
     }
-    if(beacon === true && 'sendBeacon' in navigator){
+    if(navigator && beacon === true && 'sendBeacon' in navigator){
         var form_data = new FormData();
         for ( var key in body ) {
             form_data.append(key, body[key]);
         }
         return navigator.sendBeacon((URL[apiEndpoint] || URL.itea) + serviceURL + url, form_data);
     }
-    var serviceAPI = API({auth, apiEndpoint})
+    var serviceAPI = API({auth, apiEndpoint, lang})
     serviceAPI = serviceAPI.url(serviceURL)
     if(serviceAPI === null){
         if(!listener && listenCode.indexOf(501) >= 0){
@@ -103,7 +108,7 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         try {
             data = JSON.parse(data)
         }catch(e){
-        
+            
         }
         return {status: status, body: data}
     }).catch(err => ({status: err.status, body: err.message}))
