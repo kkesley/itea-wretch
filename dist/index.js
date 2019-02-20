@@ -25,6 +25,8 @@ var _momentTimezone2 = _interopRequireDefault(_momentTimezone);
 
 var _effects = require('redux-saga/effects');
 
+require('url-search-params-polyfill');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _marked = /*#__PURE__*/_regenerator2.default.mark(callAPI);
