@@ -32,6 +32,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var _marked = /*#__PURE__*/_regenerator2.default.mark(callAPI);
 
 var SERVICES = exports.SERVICES = {
+    NOTIFICATION: "NOTIFICATION",
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
     EDUCATION: "EDUCATION",
@@ -168,6 +169,8 @@ function callAPI() {
                         serviceURL = "/education";
                     } else if (service === SERVICES.COMMENT) {
                         serviceURL = "/comment";
+                    } else if (service === SERVICES.NOTIFICATION) {
+                        serviceURL = "/notification";
                     } else if (service === SERVICES.TALK) {
                         serviceURL = "/talk";
                     }
