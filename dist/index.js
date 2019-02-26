@@ -35,7 +35,8 @@ var SERVICES = exports.SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
     EDUCATION: "EDUCATION",
-    COMMENT: "COMMENT"
+    COMMENT: "COMMENT",
+    TALK: "TALK"
 };
 var URL = {
     itea: process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com",
@@ -167,6 +168,8 @@ function callAPI() {
                         serviceURL = "/education";
                     } else if (service === SERVICES.COMMENT) {
                         serviceURL = "/comment";
+                    } else if (service === SERVICES.TALK) {
+                        serviceURL = "/talk";
                     }
 
                     if (!(navigator && beacon === true && 'sendBeacon' in navigator)) {

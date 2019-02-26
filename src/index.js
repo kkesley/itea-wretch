@@ -7,7 +7,8 @@ export const SERVICES = {
     PLATFORM: "PLATFORM",
     PROFILE: "PROFILE",
     EDUCATION: "EDUCATION",
-    COMMENT: "COMMENT"
+    COMMENT: "COMMENT",
+    TALK: "TALK",
 }
 const URL = {
     itea: process.env.NODE_ENV === "prod" ? "https://api.iteacloud.com" : "https://dev-api.iteacloud.com",
@@ -75,6 +76,8 @@ export function* callAPI({service, url, method, body, query, listener, listenCod
         serviceURL = "/education"
     }else if (service === SERVICES.COMMENT){
         serviceURL = "/comment"
+    }else if (service === SERVICES.TALK){
+        serviceURL = "/talk"
     }
     if(navigator && beacon === true && 'sendBeacon' in navigator){
         var form_data = new FormData();
